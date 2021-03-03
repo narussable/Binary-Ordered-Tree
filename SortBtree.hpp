@@ -9,7 +9,8 @@ class Node{
     private:
         Node * Sub;
         Node * Sup;
-        TheClass  n_key;
+        TheClass   n_key;
+        unsigned int n=1;
 
         void pushL ( const TheClass& );
         void pushR ( const TheClass& );
@@ -26,11 +27,16 @@ class Node{
         ~Node ( void )
         { this->destroy(); }
 
-        TheClass * getSub (void);
-        TheClass * getSup (void);
+        TheClass * getSub ( void );
+        TheClass * getSup ( void );
 
         void push ( const TheClass& newKey );
-        void printOrdered( void );
+        void printOrdered ( void );
+        void getNext      ( TheClass * );
+
+        unsigned int getN ( void ) const; 
+
+        TheClass * getList( void );
 };
 
 template <typename TheClass>
@@ -78,6 +84,7 @@ void Node<TheClass>::push ( const TheClass& newKey ){
         else
             (this->Sup)->push ( newKey );
     }
+    ++n;
 }
 
 template<typename TheClass>
@@ -94,5 +101,27 @@ void Node<TheClass>::printOrdered (void){
     cout << this->n_key << ' ';
     if( this->Sup!=NULL ){ (this->Sup)->printOrdered(); }
 }
+
+unsigned int MyIndex = 0;
+
+template<typename TheClass>
+void Node<TheClass>::getNext ( TheClass * _list ){
+    if( this->Sub!=NULL ){ (this->Sub)->getNext(_list); }
+    _list[MyIndex] = this->n_key;
+    ++MyIndex;
+    if( this->Sup!=NULL ){ (this->Sup)->getNext(_list); }
+}
+
+template<typename TheClass>
+TheClass * Node<TheClass>::getList ( void ){ 
+    TheClass * _list = (TheClass*) malloc (this->n*sizeof(TheClass)); 
+    this->getNext( _list );    
+    MyIndex = 0;
+    return _list;
+}
+
+template<typename TheClass>
+unsigned int Node<TheClass>::getN ( void ) const
+{ return n; }
 
 #endif
